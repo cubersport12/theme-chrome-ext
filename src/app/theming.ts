@@ -16,15 +16,16 @@ export type Palettes = {
 
 
 export class MirTheming {
-  constructor(private readonly _document: Document, private readonly _isDark: boolean) {
+  constructor(private readonly _isDark: boolean) {
   }
 
   private _findHue(palette: Palette, hue: number): string {
     return palette[huesArray.indexOf(hue)];
   }
 
-  public applyPalettes(palettes: Palettes): void {
-    const style = this._document.body.style;
+  public getCssContent(palettes: Palettes): string {
+    const body = document.createElement('body');
+    const style = body.style;
     const hues = {
       color: this._isDark ? 80 : 40,
       onColor: this._isDark ? 20 : 100,
@@ -97,5 +98,17 @@ export class MirTheming {
       style.setProperty(getVarName(Token['surface-container-high']), this._findHue(neutral, this._isDark ? 17 : 92));
       style.setProperty(getVarName(Token['surface-container-highest']), this._findHue(neutral, this._isDark ? 24 : 90));
     }
+    const cssContent = new Map<string, string>();
+    Object.values(body.style).forEach(name => {
+      if (name.startsWith('--')) {
+        const v = body.style.getPropertyValue(name);
+        cssContent.set(name, v);
+      }
+    });
+    return `
+      body {
+        ${Array.from(cssContent.entries()).map(([key, value]) => `${key}: ${value} !important`).join(';\n')}
+      }
+    `
   }
 }

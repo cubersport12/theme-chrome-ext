@@ -23,23 +23,20 @@ export function App() {
     }
     setPalettes(newPalettes);
 
+    const theming = new MirTheming(false);
+    const css = theming.getCssContent(newPalettes);
     if (chrome.tabs == null) {
-      const theming = new MirTheming(document, false);
-      theming.applyPalettes(newPalettes);
+      
     } else {
       chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
         const activeTab = tabs[0];
         if (activeTab?.id != null) {
-          await chrome.scripting.executeScript({
+          chrome.scripting.insertCSS({
             target: {
-              tabId: activeTab.id,
+              allFrames: true,
+              tabId: activeTab.id
             },
-            args: [newPalettes],
-            func: (...args: Palettes[]) => {
-              console.info(args);
-              const theming = new MirTheming(document, false);
-              theming.applyPalettes(args[0]);
-            }
+            css
           })
         }
       })
