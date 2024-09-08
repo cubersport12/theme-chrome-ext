@@ -1,3 +1,5 @@
+import { Palettes } from "./theming";
+
 export enum Token {
   'hover-color' = 'hover-color',
   'primary' = 'primary',
@@ -51,3 +53,5 @@ export enum Token {
 
 
 export const getVarName = (token: Token): string => `--mir-${token}`;
+
+export const getSourceColorVarName = (token: keyof Palettes) => `--mir-source-${token}`

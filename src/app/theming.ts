@@ -4,16 +4,17 @@ import { huesArray } from './colors';
 export type Palette = string[];
 
 export type Palettes = {
-  primary: Palette;
-  secondary: Palette;
-  tertiary: Palette;
-  error: Palette
-  success: Palette
-  warning: Palette
-  neutral: Palette;
-  neutralVariant: Palette;
+  primary?: Palette;
+  secondary?: Palette;
+  tertiary?: Palette;
+  error?: Palette
+  success?: Palette
+  warning?: Palette
+  neutral?: Palette;
+  neutralVariant?: Palette;
 }
 
+export type InitialColors = Record<keyof Palettes, string>;
 
 export class MirTheming {
   constructor(private readonly _isDark: boolean) {
@@ -22,7 +23,6 @@ export class MirTheming {
   private _findHue(palette: Palette, hue: number): string {
     return palette[huesArray.indexOf(hue)];
   }
-
   public getCssContent(palettes: Palettes): string {
     const body = document.createElement('body');
     const style = body.style;
@@ -33,7 +33,7 @@ export class MirTheming {
       onContainer: this._isDark ? 90 : 10
     }
     const { primary, secondary, tertiary, success, warning, error, neutral, neutralVariant } = palettes;
-    if (primary.length) {
+    if (primary?.length) {
       style.setProperty(getVarName(Token.primary), this._findHue(primary, hues.color));
       style.setProperty(getVarName(Token['on-primary']), this._findHue(primary, hues.onColor));
       style.setProperty(getVarName(Token['primary-container']), this._findHue(primary, hues.container));
@@ -43,35 +43,35 @@ export class MirTheming {
       style.setProperty(getVarName(Token['on-highlight']), this._findHue(primary, hues.onContainer));
     }
 
-    if (secondary.length) {
+    if (secondary?.length) {
       style.setProperty(getVarName(Token.secondary), this._findHue(secondary, hues.color));
       style.setProperty(getVarName(Token['on-secondary']), this._findHue(secondary, hues.onColor));
       style.setProperty(getVarName(Token['secondary-container']), this._findHue(secondary, hues.container));
       style.setProperty(getVarName(Token['on-secondary-container']), this._findHue(secondary, hues.onContainer));
     }
 
-    if (warning.length) {
+    if (warning?.length) {
       style.setProperty(getVarName(Token.warning), this._findHue(warning, 60));
       style.setProperty(getVarName(Token['on-warning']), this._findHue(warning, hues.onColor));
       style.setProperty(getVarName(Token['warning-container']), this._findHue(warning, hues.container));
       style.setProperty(getVarName(Token['on-warning-container']), this._findHue(warning, hues.onContainer));
     }
 
-    if (error.length) {
+    if (error?.length) {
       style.setProperty(getVarName(Token.error), this._findHue(error, hues.color));
       style.setProperty(getVarName(Token['on-error']), this._findHue(error, hues.onColor));
       style.setProperty(getVarName(Token['error-container']), this._findHue(error, hues.container));
       style.setProperty(getVarName(Token['on-error-container']), this._findHue(error, hues.onContainer));
     }
 
-    if (success.length) {
+    if (success?.length) {
       style.setProperty(getVarName(Token.success), this._findHue(success, hues.color));
       style.setProperty(getVarName(Token['on-success']), this._findHue(success, hues.onColor));
       style.setProperty(getVarName(Token['success-container']), this._findHue(success, hues.container));
       style.setProperty(getVarName(Token['on-success-container']), this._findHue(success, hues.onContainer));
     }
 
-    if (neutral.length) {
+    if (neutral?.length) {
       style.setProperty(getVarName(Token.disabled), this._findHue(neutral, 80));
       style.setProperty(getVarName(Token['on-disabled']), this._findHue(neutral, this._isDark ? 60 : 90));
 
