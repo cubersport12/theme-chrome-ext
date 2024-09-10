@@ -2,6 +2,7 @@ import { PaletteBlock } from './palette-block';
 import { InitialColors, MirTheming, Palette, Palettes } from './theming';
 import { useEffect, useState } from 'react';
 import { getSourceColorVarName } from './tokens';
+import { exportPalettes } from './export';
 
 const LS_KEY = 'theme-chrome-ext';
 
@@ -18,6 +19,7 @@ const defaultColor: InitialColors = {
 
 export function App() {
   const [palettes, setPalettes] = useState<Palettes | undefined>(undefined);
+  const [isDark, setIsDark] = useState<boolean>(false);
   const [colors, setColors] = useState(() => {
     let r: InitialColors | undefined;
     try {
@@ -50,7 +52,7 @@ export function App() {
     setPalettes(newPalettes);
     document.body.style.setProperty(getSourceColorVarName(type), byColor);
 
-    const theming = new MirTheming(false);
+    const theming = new MirTheming(isDark);
     const css = theming.getCssContent(newPalettes);
     if (chrome.tabs == null) {
       const style = document.createElement('style');
@@ -71,6 +73,12 @@ export function App() {
       });
     }
   };
+  const handleExport = () => {
+    if (palettes != null) {
+      exportPalettes(palettes)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-1 p-2" style={{ width: 700 }}>
       <PaletteBlock
@@ -121,6 +129,15 @@ export function App() {
         name="Neutral Variant"
         description="Описание цвета"
       />
+      <div className="flex gap-1 items-center justify-end">
+        <div className="flex gap-1 items-center">
+          <input checked={isDark} onChange={e => setIsDark(e.target.checked)} className="cursor-pointer" type="checkbox" id="theme-type" />
+          <label className="cursor-pointer" htmlFor="theme-type">Темная тема</label>
+        </div>
+        <button disabled={palettes == null} onClick={handleExport} type="button" className="bg-blue-300 cursor-pointer p-2 rounded-md hover:bg-blue-200">
+          Сохранить
+        </button>
+      </div>
     </div>
   );
 }
