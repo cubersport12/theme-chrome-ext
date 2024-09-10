@@ -105,8 +105,9 @@ export class MirTheming {
         cssContent.set(name, v);
       }
     });
+    const selector = this._isDark ? '.mir-dark-theme' : '.mir-light-theme';
     return `
-      body {
+      ${selector} {
         ${Array.from(cssContent.entries()).map(([key, value]) => `${key}: ${value} !important`).join(';\n')}
       }
     `
